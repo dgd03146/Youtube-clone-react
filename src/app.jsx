@@ -1,25 +1,28 @@
-import { useEffect, useState } from 'react';
-import './App.css';
+import { useCallback, useEffect, useState } from 'react';
+import styles from './app.module.css';
+import Header from './components/header/header';
 import VideoList from './components/video_list/video_list';
 
-function App() {
-  const [videos, setVideo] = useState([]);
-  useEffect(() => {
-    const requestOptions = {
-      method: 'GET',
-      redirect: 'follow',
-    };
+function App({ youtube }) {
+  const [videos, setVideos] = useState([]);
+  const search = query => {
+    youtube
+      .search(query) //
+      .then(videos => setVideos(videos)); //비디오가 받아지면 받아온 videos를 setVideos에 업데이트한다. 프로미스 리턴이 됨.
+  };
 
-    fetch(
-      'https://youtube.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&maxResults=50&key=AIzaSyCPbzL0dj-lklB6dc5L3qQ3Bl-E-_TkM8o',
-      requestOptions
-    )
-      .then(response => response.json())
-      .then(result => setVideo(result.items))
-      .catch(error => console.log('error', error));
+  useEffect(() => {
+    youtube
+      .mostPopular() //가독성 좋게하려고 주석넣음.
+      .then(videos => setVideos(videos)); //
   }, []);
 
-  return <VideoList videos={videos} />;
+  return (
+    <>
+      <Header onSearch={search} />
+      <VideoList videos={videos} />;
+    </>
+  );
 }
 
 export default App;
