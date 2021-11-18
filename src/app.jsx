@@ -1,14 +1,24 @@
 import { useCallback, useEffect, useState } from 'react';
 import styles from './app.module.css';
 import Header from './components/header/header';
+import VideoDetail from './components/video_detail/video_detail';
 import VideoList from './components/video_list/video_list';
 
 function App({ youtube }) {
   const [videos, setVideos] = useState([]);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+
+  const selectVideo = video => {
+    setSelectedVideo(video);
+  };
+
   const search = query => {
+    selectedVideo(null);
     youtube
       .search(query) //
-      .then(videos => setVideos(videos)); //비디오가 받아지면 받아온 videos를 setVideos에 업데이트한다. 프로미스 리턴이 됨.
+      .then(videos => {
+        setVideos(videos); //비디오가 받아지면 받아온 videos를 setVideos에 업데이트한다. 프로미스 리턴이 됨.
+      });
   };
 
   useEffect(() => {
@@ -20,7 +30,17 @@ function App({ youtube }) {
   return (
     <>
       <Header onSearch={search} />
-      <VideoList videos={videos} />;
+      <div className={styles.line}></div>
+      <section className={styles.content}>
+        {selectedVideo && (
+          <div className={styles.detail}>
+            <VideoDetail video={selectedVideo} />
+          </div>
+        )}
+        <div className={styles.list}>
+          <VideoList videos={videos} onVideoClick={selectVideo} />;
+        </div>
+      </section>
     </>
   );
 }
