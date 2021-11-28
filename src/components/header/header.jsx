@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { memo, useRef } from 'react';
 import styles from './header.module.css';
 import menu from './images/menu.png';
 import logo from './images/logo.png';
@@ -7,7 +7,7 @@ import github from './images/github.png';
 import tstory from './images/tstory.png';
 import jeong from './images/jeong.jpg';
 
-const Header = ({ onSearch }) => {
+const Header = memo(({ onSearch }) => {
   const inputRef = useRef();
   const handleSearch = () => {
     const value = inputRef.current.value;
@@ -54,6 +54,6 @@ const Header = ({ onSearch }) => {
       </div>
     </nav>
   );
-};
+});
 
 export default Header;

@@ -8,27 +8,30 @@ function App({ youtube }) {
   const [videos, setVideos] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
 
-  const selectVideo = video => {
+  const selectVideo = useCallback(video => {
     setSelectedVideo(video);
-  };
+  }, []);
 
-  const search = query => {
-    selectedVideo(null);
-    youtube
-      .search(query) //
-      .then(videos => {
-        setVideos(videos); //비디오가 받아지면 받아온 videos를 setVideos에 업데이트한다. 프로미스 리턴이 됨.
-      });
-  };
+  const search = useCallback(
+    query => {
+      setSelectedVideo(null);
+      youtube
+        .search(query) //
+        .then(videos => {
+          setVideos(videos); //비디오가 받아지면 받아온 videos를 setVideos에 업데이트한다. 프로미스 리턴이 됨.
+        });
+    },
+    [youtube]
+  );
 
   useEffect(() => {
     youtube
       .mostPopular() //가독성 좋게하려고 주석넣음.
       .then(videos => setVideos(videos)); //
-  }, []);
+  }, [youtube]);
 
   return (
-    <>
+    <div>
       <Header onSearch={search} />
       <div className={styles.line}></div>
       <section className={styles.content}>
@@ -41,7 +44,7 @@ function App({ youtube }) {
           <VideoList videos={videos} onVideoClick={selectVideo} />;
         </div>
       </section>
-    </>
+    </div>
   );
 }
 
